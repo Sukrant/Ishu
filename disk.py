@@ -7,7 +7,7 @@ import re
 def doc():
 	""" This script is used to find Disk size and its usage persentage """
 
-warning_threshold=20
+warning_threshold=10
 
 Type=["ext2", "ext3", "ext4", "xfs", "vfat"]
 type=str(["--type " + i for i in Type])
