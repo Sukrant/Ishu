@@ -1,0 +1,7 @@
+port=sp.Popen("netstat -ntlp| grep mysql| awk '{split($4,a,\":\")} {print a[2]}'",stdout=sp.PIPE,shell=True).communicate()[0].rstrip()
+
+socket=sp.Popen("ps h -fwwC mysqld  | awk '{print substr($NF,10)}'",stdout=sp.PIPE,shell=True).communicate()[0].rstrip()
+
+user=raw_input("Please mention user to connect : ")
+
+passwd=getpass.getpass("Please mention password to connect User %s :" % user)
