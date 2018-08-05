@@ -1,0 +1,14 @@
+		service_status.py is used to detrmine service status.
+
+Logic:
+Logic used to find service status is listen port used through service 
+
+
+Limitiation:
+This script limited to check status of those services which are using only TCP ports.
+
+This script will check any service using UDP ports.
+
+This script could report some issues for services using multiple instance with sockets, Like MySQL uses same port (3306) with diffrent socket file to publish another MySQL instance. I tried to cover MySQL part, but can't commit for any other services.
+
+

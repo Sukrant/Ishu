@@ -1,4 +1,4 @@
-port=sp.Popen("netstat -ntlp| grep mysql| awk '{split($4,a,\":\")} {print a[2]}'",stdout=sp.PIPE,shell=True).communicate()[0].rstrip()
+port=sp.Popen("netstat -ntlp| grep " + service_name + " | awk '{split($4,a,\":\")} {print a[length(a)]}'",stdout=sp.PIPE,shell=True).communicate()[0].rstrip().split("\n")
 
 socket=sp.Popen("ps h -fwwC mysqld  | awk '{print substr($NF,10)}'",stdout=sp.PIPE,shell=True).communicate()[0].rstrip()
 
