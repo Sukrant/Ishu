@@ -10,6 +10,12 @@ def usage():
 			rename_nic.py <old-nic-name>  <new-nic_name>
 
 					"""
+
+# Check Uid
+if os.getuid() != 0:
+    print "Only Root user should run it"
+    sys.exit()
+
 #
 #This will going to do changes once all pre-checks passes, please consider Linux platform Distributions
 #
