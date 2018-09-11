@@ -1,3 +1,3 @@
 # Python
 
-This project is used to manitain monitoring script to manage Webserver Alerts...
+This project is used to manitain some python scripts that  could used in many Linux administration task. 
