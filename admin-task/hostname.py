@@ -13,15 +13,15 @@ def change_hostname(new_hostname):
                sp.Popen(cmd2,stdout=sp.PIPE,shell=True)
 
 if len(sys.argv) < 2:
-print "You didn't mentioned New Hostname."
-response=raw_input("Do you like to change: (y/n)")
-       if response == 'y' or response == 'Y' or response == 'yes' or response == 'Yes' :
-               new_hostname=raw_input("What should new hostname for this Machine :")
-change_hostname(new_hostname)
-else:
-print "Ok.. Exit"	
+	print "You didn't mentioned New Hostname."
+	response=raw_input("Do you like to change: (y/n)")
+       	if response == 'y' or response == 'Y' or response == 'yes' or response == 'Yes' :
+               	new_hostname=raw_input("What should new hostname for this Machine :")
+		change_hostname(new_hostname)
+	else:
+		print "Ok.. Exit"	
 elif len(sys.argv) == 2:
-new_hostname=sys.argv[1]
-change_hostname(new_hostname)
+	new_hostname=sys.argv[1]
+	change_hostname(new_hostname)
 elif len(sys.argv) > 2:
-print "You can only provide Hostname with script"
+	print "You can only provide Hostname with script"
