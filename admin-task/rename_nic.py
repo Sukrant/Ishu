@@ -42,11 +42,7 @@ def new_interface(old_interface,new_interface):
 #
 def check_interface():
     print "Checking interface with correct name"
-#    cmd1="ls -l /sys/class/net| grep pci| awk '{print $9}'| tr '\n' ' '| xargs echo"
-#    cmd2="ls -1 /sys/class/net| tr '\n' ' '| xargs echo"
     cmd3="ip addr list| grep 'scope global'| awk '{print $NF}'"
-#    old_interfaces_name=list(sp.Popen(cmd1,stdout=sp.PIPE,shell=True).communicate())[0].strip().split()
-#    all_interfaces_name=list(sp.Popen(cmd2,stdout=sp.PIPE,shell=True).communicate())[0].strip().split()
     existing_interfaces_name=list(sp.Popen(cmd3,stdout=sp.PIPE,shell=True).communicate())[0].strip().split()
     if sys.argv[1] in existing_interfaces_name:
         if sys.argv[2] not in existing_interfaces_name:
