@@ -3,6 +3,18 @@
 import subprocess as sp 
 import os
 import sys
+from platform import dist
+
+Linux_dist=dist()[0]
+if Linux_dist != "centos" or Linux_dist != "redhat":
+    print """
+    
+    
+    This script is only for CentOS or RedHat Machines
+    
+    
+    """
+    sys.exit()
 
 def usage():
 		print """
