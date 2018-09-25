@@ -88,26 +88,15 @@ if len(sys.argv) != 3:
 				count=count+1
 		for key, value in template_dic.iteritems():
 			print key, value
-		template_number=raw_input("Put your number:")
+		template_number=input("Put your number:")
                 if template_number in template_dic.keys():
-		    print """
-
-		    Only new name would be acceptable,Below are existing one :
-    
-
-                    """
-                    
+		    print "Only new name would be acceptable,Below are existing one : "
 		    for i in [vm for vm in vm_names if "templat" not in vm]:
 			print i
 			vm_name=raw_input(":-   What would be Virtual Machine Name")
 		else:
-		    print """
-                    
-		    Provided template number is not correct , Exit
-    
-                    """
+		    print "Provided template number is not correct , Exit"
 		    sys.exit()
-
 	else:
 		print " Wrong input ..Exit... "	
 
