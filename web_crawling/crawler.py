@@ -5,7 +5,7 @@ import MySQLdb
 import socket
 
 
-class crewler:
+class crawler:
 
     def __init__(self, link, domain,time,IPs,number_urls,internal_url,external_url,inter_link):
         self.link=link
@@ -36,10 +36,3 @@ class crewler:
     def urls(self):
         self.urls=list(set([b for b in [a['href'] for a in self.url_soup.find_all('a', href=True) if a.text] if b.startswith('http')]))
         self.urls
-
-
-
-        
-
-
-    def 
