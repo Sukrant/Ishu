@@ -100,9 +100,3 @@ if len(sys.argv) != 3:
 	else:
 		print " Wrong input ..Exit... "	
 
-
-
-
-
-
-	
