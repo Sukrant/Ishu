@@ -5,6 +5,7 @@ import os
 import sys
 import libvirt
 from platform import dist
+import time
 
 def usage():
     print  """
@@ -45,8 +46,11 @@ if libvirt_conn == None:
 
 def create_clone(template_name,vm_name):
 	try:
-		cmd1="virt-clone -o {0} -n {1} -f /data/vm_images/{2}/system.img.".format(template_name,vm_name,vm_name)
+		cmd1="virt-clone -o {0} -n {1} -f /data/vm_images/{2}/system.img".format(template_name,vm_name,vm_name)
 		sp.Popen(cmd1,stdout=sp.PIPE,shell=True)
+                time.sleep(20)
+                print vm_name, "Virtual Machine has been created"
+
 	except:
 		print "There are some issues while cloning  Virtual machine, please do it manually"
 
@@ -90,10 +94,19 @@ if len(sys.argv) != 3:
 			print key, value
 		template_number=input("Put your number:")
                 if template_number in template_dic.keys():
-		    print "Only new name would be acceptable,Below are existing one : "
-		    for i in [vm for vm in vm_names if "templat" not in vm]:
-			print i
-			vm_name=raw_input(":-   What would be Virtual Machine Name")
+                  template_name=template_dic[template_number]
+		  print "Only new name would be acceptable,Below are existing one : \n"
+		  for i in [vm for vm in vm_names if "templat" not in vm]:
+		    print i
+                  print "\n\n"
+                  vm_name=raw_input(":-   What would be Virtual Machine Name: ")
+                  if vm_name in [vm for vm in vm_names if "templat" not in vm]:
+                    print "As said only new accepted, Get Lost"
+        	    sys.exit()
+                  else:
+	    	    vm_dir_checking(vm_name)
+	    	    vm_checking(vm_name)
+	    	    create_clone(template_name,vm_name)
 		else:
 		    print "Provided template number is not correct , Exit"
 		    sys.exit()
