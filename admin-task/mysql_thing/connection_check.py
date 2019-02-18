@@ -11,6 +11,8 @@ User = ""
 Host = ""
 
 
+# Below block is used to create MySQL connection.
+# No cursor attach to connection, Cursor will only attach in function itself
 def dbs_connection():
     print(" \n Please provide Database details :- \n")
     global User
@@ -26,6 +28,7 @@ def dbs_connection():
     return cnx
 
 
+# This function is used to show database
 def show_dbs():
     cnx = dbs_connection()
     cur = cnx.cursor()
@@ -33,7 +36,7 @@ def show_dbs():
     print("\nBelow are Database present in MySQL Instance\n")
     count = 1
     for i in cur:
-        print(count, i[0].decode())
+        print(count, i[0])
         count = count+1
     cur.close()
     cnx.close()
