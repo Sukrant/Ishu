@@ -11,11 +11,11 @@ def usage():
     print  """
 
     ##############################################################################################################
-    This script is used to create clone of already existing template Virtual Machines 
+    This script is used to create clone of already existing template Virtual Machines  --- working
 
-    This will also mount mount its File-System in /mnt/virtual-machine directory and copy 
+    This will also mount mount its File-System in /mnt/virtual-machine directory and copy --- pending
 
-    some admin scripts and SSH public keys for password-less authentication.
+    some admin scripts and SSH public keys for password-less authentication. --- pending
 
     It's quite easy to use this script because it will ask user inputs if proper arguments not used during run-time.
     ################################################################################################################
@@ -28,14 +28,14 @@ def usage():
     """
 
 Linux_dist=dist()[0]
-if Linux_dist != "centos" or Linux_dist != "redhat":
-    print """
+#if Linux_dist != "centos" or Linux_dist != "redhat":
+#    print """
     
     #################################################    
-    This script is only for CentOS or RedHat Machines
+#    This script is only for CentOS or RedHat Machines
     #################################################
     
-    """
+#    """
 #    sys.exit()
 
 libvirt_conn = libvirt.open('qemu:///system')
@@ -75,7 +75,7 @@ def vm_dir_checking(vm_name):
 
 if len(sys.argv) != 3:
 	usage()
-	clone=raw_input("------- >>>> Still need to create clone :")
+        clone=raw_input("------- >>>> Still need to create clone -- y/Y/yes/Yes :")
         if clone == "y" or clone == "Y" or clone == "yes" or clone == "Yes":
 		print """
 
@@ -86,6 +86,9 @@ if len(sys.argv) != 3:
 		template_names=[vms for vms in vm_names if "template" in vms]
 		count=1
 		template_dic={}
+                if not template_names:
+                    print "No template found, Exit ..."
+                    sys.exit()
 		for vm in template_names:
 			if not vm in template_dic:
 				template_dic[count]=vm
@@ -95,11 +98,14 @@ if len(sys.argv) != 3:
 		template_number=input("Put your number:")
                 if template_number in template_dic.keys():
                   template_name=template_dic[template_number]
-		  print "Only new name would be acceptable,Below are existing one : \n"
-		  for i in [vm for vm in vm_names if "templat" not in vm]:
-		    print i
-                  print "\n\n"
-                  vm_name=raw_input(":-   What would be Virtual Machine Name: ")
+                  if not [vm for vm in vm_names if "templat" not in vm]:
+                    vm_name=raw_input(":-   What would be Virtual Machine Name: ")
+                  else:
+	            print "Only new name would be acceptable,Below are existing one : \n"
+	            for i in [vm for vm in vm_names if "templat" not in vm]:
+	                print i
+                    print "\n\n"
+                    vm_name=raw_input(":-   What would be Virtual Machine Name: ")
                   if vm_name in [vm for vm in vm_names if "templat" not in vm]:
                     print "As said only new accepted, Get Lost"
         	    sys.exit()

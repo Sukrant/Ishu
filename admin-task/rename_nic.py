@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import subprocess as sp 
+import subprocess as sp
 import os
 import sys
 from platform import dist
@@ -8,11 +8,11 @@ from platform import dist
 Linux_dist=dist()[0]
 if Linux_dist != "centos" or Linux_dist != "redhat":
     print """
-    
-    
+
+
     This script is only for CentOS or RedHat Machines
-    
-    
+
+
     """
     sys.exit()
 
@@ -58,18 +58,18 @@ def check_interface():
     existing_interfaces_name=list(sp.Popen(cmd3,stdout=sp.PIPE,shell=True).communicate())[0].strip().split()
     if sys.argv[1] in existing_interfaces_name:
         if sys.argv[2] not in existing_interfaces_name:
-	    new_interface(sys.argv[1],sys.argv[2])
+            new_interface(sys.argv[1],sys.argv[2])
     	else:
-	     print "New intergace name",sys.argv[2],"is already taken"
-	     print sys.argv[2]
+	        print "New intergace name",sys.argv[2],"is already taken"
+	        print sys.argv[2]
     else:
-	 print "Old interface name", sys.argv[1],"is not Exit"
-	 print sys.argv[1]
-         
+	    print "Old interface name", sys.argv[1],"is not Exit"
+	    print sys.argv[1]
+
 
 
 #
-#Will check sufficient argument provided, if not will ask 
+#Will check sufficient argument provided, if not will ask
 #
 
 if len(sys.argv) != 3:
