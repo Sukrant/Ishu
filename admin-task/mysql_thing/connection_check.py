@@ -1,12 +1,10 @@
 #!/usr/bin/python3.6
 
-##
-##This file could used to work for some basic mysql operations
-##
+
+# This file could used to work for some basic mysql operations
+
 
 import mysql.connector
-import os
-import subprocess as sp
 import sys
 import getpass
 User = ""
@@ -22,9 +20,9 @@ def dbs_connection():
         Host = input("What is your host to connect: ")
     else:
         print("We have already have some details for MySQL connection :\n")
-        print("User = ",User , "and Host = ",Host, "\t\tplease provide password again...\n")
-    Passwd = getpass.getpass("What is you password : ")
-    cnx = mysql.connector.connect(user=User, host=Host, password=Passwd)
+        print("User = ", User, "and Host = ", Host, "\t\tplease provide password again...\n")
+    paswd = getpass.getpass("What is you password : ")
+    cnx = mysql.connector.connect(user=User, host=Host, password=paswd)
     return cnx
 
 
@@ -45,8 +43,8 @@ def show_dbs():
 def creating_database():
     cnx = dbs_connection()
     cur = cnx.cursor()
-    Database = input("What database need to create : ")
-    sql = "create database {}".format(Database)
+    dbs = input("What database need to create : ")
+    sql = "create database {}".format(dbs)
     cur.execute(sql)
     cur.close()
     cnx.close()
@@ -56,8 +54,8 @@ def creating_database():
 def deleting_database():
     cnx = dbs_connection()
     cur = cnx.cursor()
-    Database = input("What database need to delete : ")
-    sql = "drop database {}".format(Database)
+    dbs = input("What database need to delete : ")
+    sql = "drop database {}".format(dbs)
     cur.execute(sql)
     cur.close()
     cnx.close()
