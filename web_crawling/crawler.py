@@ -7,6 +7,8 @@ import mysql.connector
 from  mysql.connector import Error
 import sys
 
+urls=[]
+
 try:
     myconnection = mysql.connector.connect(
         database = 'crawler',
@@ -34,10 +36,12 @@ def title(link):
     title=str(url_soup.title.get_text())
     return title
 
-def urls(url_soup):
+def urls_list(link):
+    global urls
     url_soup=link_url(link)
-    urls=list(set([b for b in [a['href'] for a in url_soup.find_all('a', href=True) if a.text] if b.startswith('http')]))
-    return urls 
+    new_urls=list(set([b for b in [a['href'] for a in url_soup.find_all('a', href=True) if a.text] if b.startswith('http')]))
+    urls=list(set(urls+new_urls))
+    return urls
 
 def link_data(link):
     Domain=domain(link)
@@ -48,11 +52,19 @@ def link_data(link):
         cursor.execute(link_query,(link,Domain,Title))
         myconnection.commit()
         print("Insert values for Link :", link)
+        urls=urls_list(link)
+        print(len(urls))
     except mysql.connector.Error as error:
         print(" Because of MySQL insert error. Exit...")
         sys.exit(2)
     finally:
         cursor.close()
 
+
+def urls_query(urls):
+    for url in urls:
+        link_data(url)
+
 if __name__ == "__main__":
     link_data(link)
+    urls_query(urls)
