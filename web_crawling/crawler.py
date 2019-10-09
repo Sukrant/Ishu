@@ -29,10 +29,6 @@ def domain(link):
     domain=link.split("//")[-1].split("/")[0]
     return domain
 
-def time():
-    time=datetime.datetime.now().strftime("%d:%m:%Y %H:%M:%S")
-    return time 
-
 def title(link):
     url_soup=link_url(link)
     title=str(url_soup.title.get_text())
@@ -59,8 +55,4 @@ def link_data(link):
         cursor.close()
 
 if __name__ == "__main__":
-    print("Link : ",link)
-    print("Time :",time())
-    print("Domain :", domain(link))
-    print("Title :", title(link))
     link_data(link)
