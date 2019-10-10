@@ -61,10 +61,19 @@ def link_data(link):
         cursor.close()
 
 
-def urls_query(urls):
+def urls_query(urls,link):
     for url in urls:
-        link_data(url)
+        try:
+            cursor = myconnection.cursor()
+            link_query = """ insert into tmp_site (site,parent_link) values (%s, %s) """
+            cursor.execute(link_query,(url,link))
+            myconnection.commit()
+            print("Insert values for Link :", link)
+        except mysql.connector.Error as error:
+            print(" Because of MySQL insert error. Exit...")
+        finally:
+            cursor.close()
 
 if __name__ == "__main__":
     link_data(link)
-    urls_query(urls)
+    urls_query(urls,link)
