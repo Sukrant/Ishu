@@ -26,6 +26,12 @@ except mysql.connector.Error as error:
 def Mdsum(link):
     return hashlib.md5(link.encode('utf-8')).hexdigest()
 
+# Dlete first row of tmp_site table
+def del_first_row():
+    cursor = myconnection.cursor()
+    cursor.execute("delete from tmp_site limit 1")
+    cursor.close()
+
 # Get url Data 
 def link_url(link):
     url=requests.get(link)
@@ -56,6 +62,21 @@ def urls_list(link):
 def Domain_ip(domain):
     return socket.gethostbyname(domain)
 
+# Work on temp table
+def work_url():
+    try:
+        cursor = myconnection.cursor()
+        cursor.execute("select site from tmp_site limit 1")
+        link=cursor.fetchall()[0]
+        print(link," :    Going to process is")
+        print("Deleteing ---- ",link)
+        del_first_row()
+        link_data(link)
+    except mysql.connector.Error as error:
+        print(" Because of MySQL insert error...",error)
+    finally:
+        cursor.close()
+
 # Insert Link data in site_data
 def link_data(link):
     domain=Domain(link)
@@ -69,8 +90,10 @@ def link_data(link):
         print("Insert values for Link :", link)
         urls=urls_list(link) 
         print(len(urls))
+        urls_query(urls,link)
+        work_url()
     except mysql.connector.Error as error:
-        print(" Because of MySQL insert error. Exit...")
+        print(" Because of MySQL insert error. Exit...",error)
         sys.exit(2)
     finally:
         cursor.close()
@@ -84,14 +107,12 @@ def urls_query(urls,link):
             link_query = """ insert into tmp_site (site,parent_link,mdsum) values (%s, %s, %s) """
             cursor.execute(link_query,(url,link,mdsum))
             myconnection.commit()
-            print("Insert values for Link :", link)
+            print("Insert values for Link :", url)
         except mysql.connector.Error as error:
-            print(" Because of MySQL insert error. Exit...")
-            sys.exit(3)
+            print(" Because of MySQL insert error...",error)
         finally:
             cursor.close()
 
 # Main logic start here 
 if __name__ == "__main__":
-    link_data(link)
-    urls_query(urls,link)
+   link_data(link)
