@@ -1,0 +1,14 @@
+#!/bin/bash
+
+running_vm=`virsh list| grep running| awk '{print $2}'`
+
+if [ -z $running_vm ]; then  echo -e "\n===============No VM in running state================\n";exit 1; fi
+
+echo -e "\t\t\t\t  Name       MAC address          Protocol     Address"
+echo -e "\t\t\t\t  ------------------------------------------------------------"
+
+for i in $running_vm
+do
+    echo -n "$i"
+    echo -e "\t\t`virsh domifaddr $i|awk 'NR>2'`"
+done

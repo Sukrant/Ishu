@@ -1,0 +1,3 @@
+#!/bin/bash
+clear
+for i in `virsh list --all --name`; do echo -n "$i -- " ;virsh domstate $i|sed 's/^/\t/;s/shut.*/poweroff/';for f in `virsh domblklist $i| awk '{if ($2~"^/") print $2}'`; do du -sh $f;done; echo "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";done

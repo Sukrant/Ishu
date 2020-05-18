@@ -1,0 +1,27 @@
+#!/bin/zsh 
+
+disk_part() {
+	vm_disk_log=/tmp/domblk_log.$$
+	virsh domblklist $1 | sed -e '1,2d;/^$/d;/-$/d' > $vm_disk_log
+	for disk source in `cat $vm_disk_log`
+       		do 
+			echo -en $disk  $source "\t"
+			du -sh $source| awk '{print $1}'
+		done 
+	rm -f $vm_disk_log
+
+
+}
+
+
+vm_state() {
+	virsh domstate $1| sed '/^$/d'|sed 's/shut off/poweroff/'
+}
+
+	for vm in `virsh list --all --name`
+	do
+	echo  "\n"$vm "\t" $(vm_state $vm) 
+	echo  "$(disk_part $vm)" | column -t
+	#virsh snapshot-list $vm |sed '1,2d;$d'|awk '{print $1}'
+	echo "--------------------------------------------------"
+	done
