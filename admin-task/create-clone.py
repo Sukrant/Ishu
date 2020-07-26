@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/data/conda/bin/python
 
 import subprocess as sp 
 import os

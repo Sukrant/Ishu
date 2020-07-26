@@ -1,4 +1,4 @@
-#!/usr/bin/python3.6
+#!/data/conda/bin/python
 
 
 # This file could used to work for some basic mysql operations
