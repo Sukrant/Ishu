@@ -9,7 +9,7 @@ import socket, hashlib, sys, datetime
 urls=[]
 link = sys.argv[1]
 
-class Crawling(self,link):
+class Crawling:
     """This class is used to get data from any url 
     save it in database and further use its 
     data to get more link to study and save in database"""
