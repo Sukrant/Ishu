@@ -10,48 +10,52 @@ urls=[]
 link = sys.argv[1]
 
 class Crawling(self,link):
-    link=self.link
-    # MySQL connection
-    try:
-        myconnection = mysql.connector.connect(
-        database = 'crawler',
-        host = 'localhost',
-        user = 'crawler',
-        password = 'passw0rd')
-    except mysql.connector.Error as error:
-        print("Failed to insert into MySQL table .. Exiting ... {}".format(error))
-        sys.exit(1)
+    """This class is used to get data from any url 
+    save it in database and further use its 
+    data to get more link to study and save in database"""
+    
+    def my_conn(self):
+        # MySQL connection
+        try:
+            myconnection = mysql.connector.connect(
+            database = 'crawler',
+            host = 'localhost',
+            user = 'crawler',
+            password = 'passw0rd')
+        except mysql.connector.Error as error:
+            print(f"Failed to insert into MySQL table .. Exiting ... {error}")
+            sys.exit(1)
 
     # get mdsum of url
-    def Mdsum(link):
+    def Mdsum(self,link):
         return hashlib.md5(link.encode('utf-8')).hexdigest()
 
     # Delete first row of tmp_site table
-    def del_first_row():
+    def del_first_row(self):
         cursor = myconnection.cursor()
         cursor.execute("delete from tmp_site limit 1")
         cursor.close()
 
     # Get url Data 
-    def link_url(link):
+    def link_url(self,link):
         url=requests.get(link)
         url_content=url.content
         url_soup=bs(url_content,"html.parser")
         return url_soup
 
     # Get url Domain
-    def Domain(link):
+    def Domain(self,link):
         domain=link.split("//")[-1].split("/")[0]
         return domain
 
     # Get Url Title
-    def Title(link):
+    def Title(self,link):
         url_soup=link_url(link)
         title=str(url_soup.title.get_text())
         return title
 
     # Get Other urls in link
-    def urls_list(link):
+    def urls_list(self,link):
         global urls
         url_soup=link_url(link)
         new_urls=list(set([b for b in [a['href'] for a in url_soup.find_all('a', href=True) if a.text] if b.startswith('http')]))
@@ -59,11 +63,11 @@ class Crawling(self,link):
         return urls
 
     # Domain IP
-    def Domain_ip(domain):
+    def Domain_ip(self,domain):
         return socket.gethostbyname(domain)
 
     # Insert Link data in site_data table (main table)
-    def link_data(link):
+    def link_data(self,link):
         domain=Domain(link)
         title=Title(link)
         ip=Domain_ip(domain)
@@ -83,7 +87,7 @@ class Crawling(self,link):
             cursor.close()
 
     # Insert Url list data in tmp_site
-    def urls_query(urls,link):
+    def urls_query(self,urls,link):
         for url in urls:
             mdsum=Mdsum(url)
             try:
@@ -117,5 +121,4 @@ class Crawling(self,link):
                 cursor.close()
 
 if __name__=='__main__':
-
-
+    pass
