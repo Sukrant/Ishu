@@ -121,4 +121,5 @@ class Crawling:
                 cursor.close()
 
 if __name__=='__main__':
-    pass
+    self = Crawling(link)
+
