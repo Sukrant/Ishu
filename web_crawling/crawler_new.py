@@ -101,7 +101,7 @@ class Crawling:
             finally:
                 cursor.close()
 
-        # Main logic start here 
+    # Main logic start here 
     def __init__(self,link):
         self.link=link
         if self.link:
