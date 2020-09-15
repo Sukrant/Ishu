@@ -7,13 +7,23 @@ from  mysql.connector import Error
 import socket, hashlib, sys, datetime
 
 urls=[]
+if len(sys.argv) != 2:
+    print(f"""You didn't provide URL to work On  
+    ./crawler_new.py google.com""")
+    sys.exit()
 link = sys.argv[1]
+
+
 
 class Crawling:
     """This class is used to get data from any url 
     save it in database and further use its 
     data to get more link to study and save in database"""
-    
+
+    # Main logic start here 
+    def __init__(self,link):
+        self.link=link
+
     def my_conn(self):
         # MySQL connection
         try:
@@ -21,7 +31,7 @@ class Crawling:
             database = 'crawler',
             host = 'localhost',
             user = 'crawler',
-            password = 'passw0rd')
+            password = 'Astgjdous_12')
         except mysql.connector.Error as error:
             print(f"Failed to insert into MySQL table .. Exiting ... {error}")
             sys.exit(1)
@@ -32,6 +42,7 @@ class Crawling:
 
     # Delete first row of tmp_site table
     def del_first_row(self):
+        myconnection = my_conn()
         cursor = myconnection.cursor()
         cursor.execute("delete from tmp_site limit 1")
         cursor.close()
@@ -68,6 +79,7 @@ class Crawling:
 
     # Insert Link data in site_data table (main table)
     def link_data(self,link):
+        myconnection = my_conn()
         domain=Domain(link)
         title=Title(link)
         ip=Domain_ip(domain)
@@ -88,6 +100,7 @@ class Crawling:
 
     # Insert Url list data in tmp_site
     def urls_query(self,urls,link):
+        myconnection = my_conn()
         for url in urls:
             mdsum=Mdsum(url)
             try:
@@ -100,10 +113,8 @@ class Crawling:
                 print(" Because of MySQL insert error...",error)
             finally:
                 cursor.close()
-
-    # Main logic start here 
-    def __init__(self,link):
-        self.link=link
+    def start(self,link):
+        myconnection = my_conn()
         if self.link:
             link_data(link)
         else:
@@ -121,4 +132,6 @@ class Crawling:
                 cursor.close()
 
 if __name__=='__main__':
-    self = Crawling(link)
+    link = Crawling(link)
+
+    
