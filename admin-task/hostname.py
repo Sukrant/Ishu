@@ -52,9 +52,7 @@ def what_os(os_file):
 
 def change_hostname(new_hostname):
     ''' This fucntion is used to change hostname of Machine   '''
-    print(f'I am here with {os_dis} {os_maj} with {new_hostname}')
     if os_dis == "CentOS" and os_maj.startswith("6"):
-        print(f'I am in centos6 and changing name to {new_hostname}')
         cmd1 = "sed -i 's/HOSTNAME=.*/HOSTNAME={0}/g' /etc/sysconfig/network".format(new_hostname)
         sp.Popen(cmd1, stdout=sp.PIPE, shell=True)
         cmd2 = "hostname {0}".format(new_hostname)
@@ -83,7 +81,6 @@ if len(sys.argv) < 2:
 elif len(sys.argv) == 2:
     new_hostname = sys.argv[1]
     os_file = os_file_path()
-    print(f'this is os os_file {os_file}')
     what_os(os_file)
     change_hostname(new_hostname)
 elif len(sys.argv) > 2:
