@@ -1,71 +1,90 @@
 #!/data/conda/bin/python
 
-import subprocess as sp 
+import subprocess as sp
 import os
 import sys
 
 
 def os_cmd(cmd):
-    out,err = sp.Popen(cmd,stdout=sp.PIPE,stderr=sp.PIPE,shell=True).communicate()
-    return out,err
+    out, err = sp.Popen(cmd,stdout=sp.PIPE,stderr=sp.PIPE,shell=True).communicate()
+    return out, err
 
-if not os.path.exists("/etc/os-release"):
-    sys.exit(f'/etc/os-release doesn\'t . Unable to find OS')
+os_dis,os_maj = None,None 
 
+def os_file_path():
+    ''' This funtions is used to  find out OS file '''
+    os_files = ["/etc/redhat-release", "/etc/os-release"]
+    for file in os_files:
+        if os.path.exists(file):
+            return file
+    sys.exit('No OS file exists')
 
-cmd = "awk -F= '/PRETTY_NAME/{{split ($2,a,\" \"); print a[1]}}' /etc/os-release"
-out,err = os_cmd(cmd)
-if err:
-    print("Unable to find OS Information")
-    sys.exit()
-os_dis = out.decode('utf-8').split("\n")[0]
-if "CentOS" in os_dis:
-    os_dis = "CentOS"
-    cmd = "awk -F= '/PRETTY_NAME/{{split ($2,a,\" \"); print a[3]}}' /etc/os-release"
-    out,err=os_cmd(cmd)
-    if err:
-        print("Unable to find OS information")
-        sys.exit()
-    os_maj = out.decode('utf-8').split("\n")[0]
-    print(f'This Machine is {os_dis} {os_maj}')
-elif "Ubuntu" in os_dis:
-    os_dis = "Ubuntu"
-    cmd = "awk -F= '/PRETTY_NAME/{{split ($2,a,\" \"); print a[2]}}' /etc/os-release"
-    out,err=os_cmd(cmd)
-    if err:
-        print("Unable to find OS information")
-        sys.exit()
-    os_maj = out.decode('utf-8').split("\n")[0]
-    print(f'This Machine is {os_dis} {os_maj}')
+def what_os(os_file):
+    '''This function is used to find Os information'''
+    global os_dis
+    global os_maj
+    if os_file == "/etc/redhat-release":
+        with open("/etc/redhat-release") as file:
+            content = file.read().split(" ")
+            if [i for i in content if 'Linux' in content]:
+                content.remove('Linux')
+            if [i for i in content if content[0] == "CentOS"]:
+                os_ver = ' '.join(content[0:3:2])
+                os_dis = os_ver[0:6]
+                os_maj = os_ver[7]
+    elif os_file == "/etc/os-release":
+        cmd = f"awk -F= '/PRETTY_NAME/{{split ($2,a,\" \"); print a[1]}}' {os_file}"
+        out, err = os_cmd(cmd)
+        if err:
+            print("Unable to find OS Information")
+            sys.exit()
+        os_dis = out.decode('utf-8').split("\n")[0]
+        if "Ubuntu" in os_dis:
+            os_dis = "Ubuntu"
+            cmd = "awk -F= '/PRETTY_NAME/{{split ($2,a,\" \"); print a[2]}}' /etc/os-release"
+            out, err = os_cmd(cmd)
+            if err:
+                print("Unable to find OS information")
+                sys.exit()
+            os_maj = out.decode('utf-8').split("\n")[0]
+            print(f'This Machine is {os_dis} {os_maj}')
 
 
 def change_hostname(new_hostname):
+    ''' This fucntion is used to change hostname of Machine   '''
+    print(f'I am here with {os_dis} {os_maj} with {new_hostname}')
     if os_dis == "CentOS" and os_maj.startswith("6"):
+        print(f'I am in centos6 and changing name to {new_hostname}')
         cmd1 = "sed -i 's/HOSTNAME=.*/HOSTNAME={0}/g' /etc/sysconfig/network".format(new_hostname)
-        sp.Popen(cmd1,stdout=sp.PIPE,shell=True)
+        sp.Popen(cmd1, stdout=sp.PIPE, shell=True)
         cmd2 = "hostname {0}".format(new_hostname)
-        sp.Popen(cmd2,stdout=sp.PIPE,shell=True)
+        sp.Popen(cmd2, stdout=sp.PIPE, shell=True)
     elif (os_dis == "CentOS" and (os_maj.startswith("7") or os_maj.startswith("8"))) \
             or os_dis == "Ubuntu":
         cmd1 = "echo {} > /etc/hostname".format(new_hostname)
-        out,err = os_cmd(cmd1)
+        out, err = os_cmd(cmd1)
         if err:
             print(f'unable to save ew-hostname: {new_hostname} in /etc/hostname {err}')
         cmd2 = "hostname {0}".format(new_hostname)
-        out,err = os_cmd(cmd2)
+        out, err = os_cmd(cmd2)
         if err:
             print(f'unable to run hostname command')
-            
+
 if len(sys.argv) < 2:
     print("You didn't mentioned New Hostname.")
-    response=input("Do you like to change: (y/n)")
-    if response == 'y' or response == 'Y' or response == 'yes' or response == 'Yes' :
-        new_hostname=input("What should new hostname for this Machine :")
+    response = input("Do you like to change: (y/n)")
+    if response == 'y' or response == 'Y' or response == 'yes' or response == 'Yes':
+        new_hostname = input("What should new hostname for this Machine :")
+        os_file = os_file_path
+        what_os(os_file)
         change_hostname(new_hostname)
     else:
         print("Ok.. Exit")
 elif len(sys.argv) == 2:
-	new_hostname=sys.argv[1]
-	change_hostname(new_hostname)
+    new_hostname = sys.argv[1]
+    os_file = os_file_path()
+    print(f'this is os os_file {os_file}')
+    what_os(os_file)
+    change_hostname(new_hostname)
 elif len(sys.argv) > 2:
 	print("You can only provide Hostname with script.")
