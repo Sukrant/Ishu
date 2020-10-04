@@ -6,7 +6,7 @@ import sys
 
 os_dis,os_maj = None,None 
 
-''' Used to change hostname Os Linux machine 
+''' This used to change hostname Os Linux machine 
     Capable of change hostname on Ubuntu/Redhat(5,6,7,8)/CentOS(5,6,7,8)
     This is depend on two files to know Machine details
         1. /etc/redhat-release
@@ -15,23 +15,25 @@ os_dis,os_maj = None,None
 '''
 
 def os_cmd(cmd):
-    '''This is capbale to run on Linux commands and provide Output and Error as return'''
+    '''This function is used to Linux commands and return Output and error'''
     out, err = sp.Popen(cmd,stdout=sp.PIPE,stderr=sp.PIPE,shell=True).communicate()
     return out, err
 
 
-def os_file_path():
-    ''' This funtions is used to  find out OS file '''
+def what_os():
+    '''This function is used to find Os information'''
+
+    global os_dis
+    global os_maj
+
     os_files = ["/etc/redhat-release", "/etc/os-release"]
     for file in os_files:
         if os.path.exists(file):
-            return file
-    sys.exit('No OS file exists')
+            os_file = file 
+            break
+    if not os_file:
+        sys.exit('No Os file present')
 
-def what_os(os_file):
-    '''This function is used to find Os information'''
-    global os_dis
-    global os_maj
     if os_file == "/etc/redhat-release":
         with open("/etc/redhat-release") as file:
             content = file.read().split(" ")
@@ -57,9 +59,12 @@ def what_os(os_file):
                 sys.exit()
             os_maj = out.decode('utf-8').split("\n")[0]
             print(f'This Machine is {os_dis} {os_maj}')
+    return os_dis, os_maj        
 
 def main(new_hostname):
     def change_hostname(new_hostname):
+        # Call what_os to determine OS details
+        what_os()
         ''' This fucntion is used to change hostname of Machine   '''
         if os_dis == "CentOS" and os_maj.startswith("6"):
             cmd1 = "sed -i 's/HOSTNAME=.*/HOSTNAME={0}/g' /etc/sysconfig/network".format(new_hostname)
@@ -71,25 +76,25 @@ def main(new_hostname):
             cmd1 = "echo {} > /etc/hostname".format(new_hostname)
             out, err = os_cmd(cmd1)
             if err:
-                print(f'unable to save ew-hostname: {new_hostname} in /etc/hostname {err}')
+                print(f'unable to save new-hostname: {new_hostname} in /etc/hostname {err}')
             cmd2 = "hostname {0}".format(new_hostname)
             out, err = os_cmd(cmd2)
             if err:
                 print(f'unable to run hostname command')
+        else:
+            print(f'unable to find Os details {os_dis}-{os_maj}')
 
     if len(sys.argv) < 2:
         print("You didn't mentioned New Hostname.")
         response = input("Do you like to change: (y/n)")
         if response == 'y' or response == 'Y' or response == 'yes' or response == 'Yes':
             new_hostname = input("What should new hostname for this Machine :")
-            os_file = os_file_path
-            what_os(os_file)
+            #what_os()
             change_hostname(new_hostname)
         else:
             print("Ok.. Exit")
     elif len(sys.argv) == 2:
-        os_file = os_file_path()
-        what_os(os_file)
+        #what_os()
         change_hostname(new_hostname)
     elif len(sys.argv) > 2:
             print("You can only provide Hostname with script.")
