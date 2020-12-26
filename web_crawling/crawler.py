@@ -94,7 +94,7 @@ def work_url():
         cursor = myconnection.cursor()
         cursor.execute("select site from tmp_site limit 1")
         link=cursor.fetchall()[0][0]
-        print(link," :    Going to process is")
+        print(link," : Going to process")
         print("Deleteing ---- ",link)
         del_first_row()
         link_data(link)
@@ -109,28 +109,20 @@ def link_data(link):
     domain = Domain(link)
     title = link_title(link)
     IpAddress = Domain_ip(domain)
-    if link.startswith('https://download') and link.startswith('http://download'):
-        pass 
     urls = urls_list(link)
     number_of_Urls = len(urls)    
-    print(f'{link}-{domain}-{title}-{IpAddress}-{number_of_Urls}')
+   # print(f'{link}-{domain}-{title}-{IpAddress}-{number_of_Urls}')
     try:
         cursor = myconnection.cursor()
         link_query = """ insert into site_data (link,domain,title,IpAddress,number_of_Urls) values (%s, %s, %s, %s, %s) """
-        print(link_query)
+        #print(link_query)
         cursor.execute(link_query,(link,domain,title,IpAddress,number_of_Urls))
         myconnection.commit()
         print("Insert values for Link :", link)
-        if link.startswith('https://download') and link.startswith('http://download'):
-            pass
         urls=urls_list(link)
-        if urls:
-            print(len(urls))
-            urls_query(urls,link)
+        if urls: urls_query(urls,link)
         work_url()
-        if urls:
-            print(len(urls))
-            urls_query(urls)
+        if urls: urls_query(urls)
         work_url()
     except mysql.connector.Error as error:
         print(" Because of MySQL insert error. Exit...",error)
