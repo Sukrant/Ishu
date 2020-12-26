@@ -53,3 +53,36 @@ socket.gethostbyname(list(set([b for b in [a['href'] for a in url_soup.find_all(
 *****time=datetime.datetime.now().strftime("%d:%m:%Y %H:%M:%S")
 *****urls=list(set([b for b in [a['href'] for a in url_soup.find_all('a', href=True) if a.text] if b.startswith('http')]))
 
+
+mysql> show create table site_data\G;
+*************************** 1. row ***************************
+       Table: site_data
+Create Table: CREATE TABLE `site_data` (
+  `site_id` mediumint NOT NULL AUTO_INCREMENT,
+  `link` varchar(512) NOT NULL,
+  `domain` varchar(255) DEFAULT NULL,
+  `title` text,
+  `IpAddress` varchar(50) DEFAULT NULL,
+  `number_of_Urls` int DEFAULT NULL,
+  PRIMARY KEY (`site_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=241 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+1 row in set (0.00 sec)
+
+ERROR: 
+No query specified
+
+mysql> show create table tmp_site\G;
+*************************** 1. row ***************************
+       Table: tmp_site
+Create Table: CREATE TABLE `tmp_site` (
+  `site_id` mediumint NOT NULL AUTO_INCREMENT,
+  `site` varchar(512) NOT NULL,
+  `parent_link` varchar(512) DEFAULT NULL,
+  `mdsum` varchar(255) NOT NULL,
+  PRIMARY KEY (`site_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=70533 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+1 row in set (0.00 sec)
+
+ERROR: 
+No query specified
+
