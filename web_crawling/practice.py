@@ -66,10 +66,6 @@ Create Table: CREATE TABLE `site_data` (
   `number_of_Urls` int DEFAULT NULL,
   PRIMARY KEY (`site_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=241 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
-1 row in set (0.00 sec)
-
-ERROR: 
-No query specified
 
 mysql> show create table tmp_site\G;
 *************************** 1. row ***************************
@@ -81,8 +77,3 @@ Create Table: CREATE TABLE `tmp_site` (
   `mdsum` varchar(255) NOT NULL,
   PRIMARY KEY (`site_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=70533 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
-1 row in set (0.00 sec)
-
-ERROR: 
-No query specified
-
