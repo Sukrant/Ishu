@@ -14,15 +14,41 @@ if len(sys.argv) != 2:
 link = sys.argv[1]
 
 
-
+import requests
+from bs4 import BeautifulSoup as bs
+import mysql.connector
+from  mysql.connector import Error
+import socket, hashlib, sys, datetime
 class Crawling:
-    """This class is used to get data from any url 
-    save it in database and further use its 
-    data to get more link to study and save in database"""
-
-    # Main logic start here 
+    """ Doc for Crawling class """
+    
     def __init__(self,link):
-        self.link=link
+        self.link = link
+        self.domain=self.link.split("//")[-1].split("/")[0]
+        self.domain_ip=socket.gethostbyname(self.domain)
+        self.title=self.Title()
+        self.url_list=self.urls_list()
+    # Get url Data
+    def link_url(self):
+        url=requests.get(self.link)
+        url_content=url.content
+        url_soup=bs(url_content,"html.parser")
+        return url_soup
+    # Get Url Title
+    def Title(self):
+        url_soup=self.link_url()
+        title=str(url_soup.title.get_text())
+        return title
+    # Get Other urls in link
+    def urls_list(self):
+	    urls=[]
+	    url_soup=self.link_url()
+	    if url_soup:
+	        new_urls=list(set([b for b in [a['href'] for a in url_soup.find_all('a', href=True) if a.text] if b.startswith('http') and not b.startswith('https://download') and not b.startswith('https://download')]))
+	        urls=list(set(urls+new_urls))
+	        return urls
+	    else:
+	        return None
 
     def my_conn(self):
         # MySQL connection
@@ -46,36 +72,6 @@ class Crawling:
         cursor = myconnection.cursor()
         cursor.execute("delete from tmp_site limit 1")
         cursor.close()
-
-    # Get url Data 
-    def link_url(self,link):
-        url=requests.get(link)
-        url_content=url.content
-        url_soup=bs(url_content,"html.parser")
-        return url_soup
-
-    # Get url Domain
-    def Domain(self,link):
-        domain=link.split("//")[-1].split("/")[0]
-        return domain
-
-    # Get Url Title
-    def Title(self,link):
-        url_soup=link_url(link)
-        title=str(url_soup.title.get_text())
-        return title
-
-    # Get Other urls in link
-    def urls_list(self,link):
-        global urls
-        url_soup=link_url(link)
-        new_urls=list(set([b for b in [a['href'] for a in url_soup.find_all('a', href=True) if a.text] if b.startswith('http')]))
-        urls=list(set(urls+new_urls))
-        return urls
-
-    # Domain IP
-    def Domain_ip(self,domain):
-        return socket.gethostbyname(domain)
 
     # Insert Link data in site_data table (main table)
     def link_data(self,link):
@@ -133,5 +129,3 @@ class Crawling:
 
 if __name__=='__main__':
     link = Crawling(link)
-
-    
